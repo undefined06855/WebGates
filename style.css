@@ -296,8 +296,8 @@ img {
 }
 
 input[type=color] {
-    width: 50%;
-    height: 100%;
+    width: 30%;
+    height: 70%;
 }
 
 #version {
@@ -306,4 +306,15 @@ input[type=color] {
     position: fixed;
     bottom: 2px;
     right: 2px;
+}
+
+#clearbtn {
+    font-size: 8px;
+    height: 10%;
+    width: 10%;
+}
+
+.fontspan {
+    margin-top: 25px;
+    flex: 1;
 }

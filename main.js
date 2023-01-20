@@ -38,6 +38,18 @@ document.getElementById("h2ubtn").addEventListener("click", () => {
     document.getElementById("optionsmenu").classList.remove("unopen")
 })
 
+document.getElementById("clearbtn").addEventListener("click", () => {
+    if (confirm("Are you sure you want to clear localStorage?"))
+    {
+        window.localStorage.clear()
+        window.location.reload()
+    }
+})
+
+document.getElementById("creditbtn").addEventListener("click", () => {
+    window.open("https://undefined06855.github.io/projects/", "_blank")
+})
+
 document.getElementById("menuwrapper").addEventListener("click", () => {
     if (document.getElementById("line1").classList.contains("open"))
     {
