@@ -307,7 +307,19 @@ class Gate
         this.element.remove()
         gates.splice(gates.indexOf(this), 1)
         gates.forEach(gate => {
-            if (gate.child.includes(this)) gate.child[gates.child.indexOf(this)].splice(gates.child.indexOf(this), 1)
+            const check = () => {
+                var i = 0;
+                gate.child.forEach(child => {
+                    if (child === this)
+                    {
+                        gate.child.splice(i, 1)
+                        check()
+                    }
+                    i++
+                })
+            }
+            check()
+
         })
         for (var i = 0; i < this.child.length; i++)
         {
