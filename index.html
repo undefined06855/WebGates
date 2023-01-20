@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./style.css">
+        <link rel="shortcut icon" href="./icon.ico" type="image/x-icon">
+        <title>WebGates</title>
+    </head>
+    <body>
+        <div id="wrapper">
+            <div class="bar">
+                <div class="barchild">
+                    <span class="webtitle">WebGates</span>
+                    <span class="barright">
+                        <div id="menuwrapper">
+                            <div class="line" id="line1"></div>
+                            <div class="spacer"></div>
+                            <div class="line" id="line2"></div>
+                            <div class="spacer"></div>
+                            <div class="line" id="line3"></div>
+                        </div>
+                    </span>
+                </div>
+            </div>
+
+            <div id="gates"></div>
+        </div>
+
+        <div id="ctxmenu" style="display: none;">
+            <span class="menuitem" data-gate-type="input">Input</span>
+            <span class="menuitem" data-gate-type="output">Output</span>
+            <span class="menuitem" data-gate-type="or">OR</span>
+            <span class="menuitem" data-gate-type="and">AND</span>
+            <span class="menuitem" data-gate-type="xor">XOR</span>
+            <span class="menuitem" data-gate-type="not">NOT</span>
+            <span class="menuitem" data-gate-type="nor">NOR</span>
+            <span class="menuitem" data-gate-type="nand">NAND</span>
+            <span class="menuitem" data-gate-type="xnor">XNOR</span>
+        </div>
+
+        <div id="ctxmenu2" style="display: none;">
+            <span class="menuitem" data-action-type="delete">Delete</span>
+        </div>
+
+        <canvas>Your browser does not support HTML canvas. Lines will not be visible.</canvas>
+
+        <div class="menu unopen" id="optionsmenu">
+            <h1>Welcome to WebGates!</h1>
+            <p>
+                WebGates is a free, online logic gate simulator.
+            </p>
+            <p class="image left">
+                <img src="./images/intro-1.png" />
+                <span>Right clicking anywhere will bring up this menu. Use this to place gates anywhere on the screen!<br/><small>Some mouses or touchpads don't have a right click button. In that case you can use <kbd>alt</kbd> or <kbd>ctrl</kbd> keys at the same time as clicking to simulate a right click.</small></span>
+            </p>
+            <p class="paraspacer"></p>
+            <p class="image right">
+                <span>To connect gates together, click on an output node of the first gate. A line should appear from the node to the cursor. Then click on an input of another gate - this will connect the two together.</span>
+                <img src="./images/intro-2.png" />
+            </p>
+            <p class="paraspacer"></p>
+            <p class="image left">
+                <img src="./images/intro-3.png" />
+                <span>You can click on the square inside an input gate to turn the gate on or off. An output gate will display the output of the gate that is connected to it.</span>
+            </p>
+            <p class="paraspacer"></p>
+            <p class="image right">
+                <span>Now you know all about how to use this website! There is no limit to how large you can make your creations - apart from your screen size. You can access the site options from the menu in the top-left corner.<br/><small>(also, if you make a loop it <i>will</i> crash the website. Please try not to do that.)</small></span>
+                <img src="./images/intro-4.png" />
+            </p>
+
+            <button id="closebtn">Close</button>
+        </div>
+
+        <div class="menu unopen" id="settingsmenu">
+            <h2>Settings</h2>
+
+            <p id="colourselectp">
+                <span style="margin-right: 50px;">Change theme colour: </span>
+                <input type="color" id="colourselector" />
+            </p>
+
+            <button id="h2ubtn">Open how-to-use menu</button>
+
+            <span id="version">ver. 1.0</span>
+        </div>
+
+        <script src="./gate.js"></script>
+        <script src="./main.js"></script>
+    </body>
+</html>

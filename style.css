@@ -1,0 +1,309 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Fredoka One", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    color: #fff;
+    user-select: none;
+}
+
+img {
+    max-width: 50vw;
+}
+
+h1 {
+    margin-bottom: 5px;
+}
+
+p {
+    display: flex;
+    align-items: center;
+
+    max-width: 100%;
+    width: 100%;
+}
+
+p:not(.left):not(.right) {
+    justify-content: center;
+    text-align: center;
+}
+
+p.left {
+    justify-content: left;
+}
+
+p.right {
+    justify-content: right;
+}
+
+kbd {
+    font-family: "Courier New", Courier, monospace;
+}
+
+#wrapper, html, body {
+    width: 100vw;
+    height: 100vh;
+}
+
+#wrapper {
+    background-color: rgb(60, 60, 60);
+}
+
+.bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    background-color: rgb(50, 50, 50);
+
+    box-shadow: 0 0 15px rgb(0, 0, 0);
+    clip-path: inset(0px 0px -15px 0px);
+
+    display: flex;
+    justify-content: center;
+
+    z-index: 10; /* place above #gates */
+
+}
+
+.barchild {
+    width: calc(100% - 6px);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.webtitle {
+    font-size: 25px;
+}
+
+#ctxmenu, #ctxmenu2 {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    background-color: #000;
+    border: 1px solid var(--theme-color);
+    border-radius: 7px;
+
+    padding: 5px;
+
+    position: fixed;
+}
+
+#gates {
+    position: fixed;
+    
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.menuitem {
+    background-color: rgb(60, 60, 60);
+    cursor: pointer;
+    padding: 3px;
+    border-radius: 3px;
+}
+
+.menuitem:hover {
+    background-color: rgb(70, 70, 70);
+}
+
+.gate {
+    position: fixed;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 50px;
+
+    font-size: 30px;
+
+    border-radius: 10px;
+
+    background-color: rgb(48, 48, 48);
+
+    border: 3px solid #000
+}
+
+.outputnodes {
+    right: -7.5px;
+}
+
+.inputnodes {
+    left: -7.5px;
+}
+
+.outputnodes, .inputnodes {
+    position: absolute;
+
+    height: 100%;
+
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+}
+
+.input, .output {
+    width: 15px;
+    height: 15px;
+    background-color: var(--theme-color);
+
+    border-radius: 50%;
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 30px;
+
+    font-size: 17px;
+
+    background-color: var(--theme-color);
+    color: var(--text-color);
+    
+    border-radius: 10px 10px 0px 0px;
+}
+
+button {
+    margin-top: 30px;
+
+    width: 60%;
+    height: 60%;
+}
+
+button[data-button-set="true"]
+{
+    background-color: red;
+}
+
+button[data-button-set="false"], button
+{
+    background-color: unset;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+}
+
+#menuwrapper {
+    display: inline-block;
+    height: 80%;
+    width: 80%;
+}
+
+.barright {
+    height: 100%;
+    aspect-ratio: 1 / 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.line {
+    background-color: rgb(202, 202, 202);
+    height: 15%;
+    border-radius: 15px;
+}
+
+.spacer {
+    height: 25%;
+}
+
+.paraspacer {
+    margin-top: 50px;
+    margin-bottom: 50px;
+    border-top: 1px solid rgb(202, 202, 202);
+    translate: 0px -50%;
+}
+
+.menu {
+    position: fixed;
+    top: 5vh;
+    left: 5vw;
+
+    background-color: rgb(60, 60, 60);
+    color: rgb(202, 202, 202);
+
+    border: 2px solid var(--theme-color);
+
+    padding: 5px;
+
+    width: 90vw;
+    height: 90vh;
+
+    border-radius: 5px;
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    overflow: scroll;
+
+    transition: all .5s ease;
+}
+
+.unopen {
+    opacity: 0;
+    top: 105vh;
+}
+
+img {
+    margin: 5px 40px;
+}
+
+
+#line1, #line2, #line3 {
+    transition: all .75s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+#line1.open {
+    transform: translateY(265%) rotate(225deg);
+}
+
+#line2.open {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+#line3.open {
+    transform: translateY(-265%) rotate(-225deg);
+}
+
+#colourselectp {
+    height: 100%;
+    flex-direction: row;
+}
+
+input[type=color] {
+    width: 50%;
+    height: 100%;
+}
+
+#version {
+    font-size: 13px;
+    color: rgb(255, 255, 255, .5);
+    position: fixed;
+    bottom: 2px;
+    right: 2px;
+}
