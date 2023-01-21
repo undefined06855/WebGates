@@ -70,13 +70,18 @@ document.getElementById("menuwrapper").addEventListener("click", () => {
 })
 
 function openContextMenu(event, contexttype)
-{    
+{
     menus.forEach(menu => menu.style.display = "none")
-    
+    menus[contexttype].style.display = "flex"
     menus[contexttype].style.top = event.pageY + "px"
     menus[contexttype].style.left = event.pageX + "px"
 
-    menus[contexttype].style.display = "flex"
+    const rect = menus[contexttype].getBoundingClientRect()
+    
+    if (rect.bottom > window.innerHeight) menus[contexttype].style.top = (event.pageY - rect.height) + "px"
+    else menus[contexttype].style.top = event.pageY + "px"
+    if (rect.right > window.innerWidth) menus[contexttype].style.left = (event.pageX - rect.width) + "px"
+    else menus[contexttype].style.left = event.pageX + "px"
 
     newgatex = event.pageX
     newgatey = event.pageY
@@ -122,14 +127,11 @@ document.addEventListener("keydown", event => {
 })
 
 Array.from(document.getElementsByClassName("menuitem")).forEach(item => {
-    if (item.getAttribute("data-gate-type"))
     item.addEventListener("click", event => {
-        new Gate(newgatex, newgatey, item.getAttribute("data-gate-type"))
+             if (item.getAttribute("data-action-type") == "delete") clickedgate.delete()
+        else if (item.getAttribute("data-gate-type")) new Gate(newgatex, newgatey, item.getAttribute("data-gate-type"))
+
         closeContextMenu(0)
-    })
-    else
-    item.addEventListener("click", event => {
-        clickedgate.delete()
         closeContextMenu(1)
     })
 })

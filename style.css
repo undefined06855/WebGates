@@ -81,10 +81,11 @@ kbd {
     font-size: 25px;
 }
 
-#ctxmenu, #ctxmenu2 {
-    display: flex;
+.ctxmenu {
     flex-direction: column;
     gap: 3px;
+
+    font-size: 13px;
 
     background-color: #000;
     border: 1px solid var(--theme-color);
@@ -92,7 +93,13 @@ kbd {
 
     padding: 5px;
 
+    min-width: 130px;
+
     position: fixed;
+}
+
+#ctxmenu2 {
+    min-width: 50px;
 }
 
 #gates {
@@ -131,6 +138,13 @@ kbd {
     background-color: rgb(48, 48, 48);
 
     border: 3px solid #000
+}
+
+.gate > * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .outputnodes {
@@ -196,7 +210,7 @@ button[data-button-set="false"], button
     background-color: unset;
 }
 
-canvas {
+#lines {
     position: fixed;
     top: 0;
     left: 0;

@@ -3,14 +3,14 @@ const contextmenu2 = document.getElementById("ctxmenu2")
 
 const menus = [contextmenu, contextmenu2]
 
-const types = ["input", "output", "or", "and", "xor", "not", "nor", "nand", "xnor"]
-
 var nodeselectstate = []
 
 const notes = {
     // width, height, inputs, outputs
     "input": [150, 150, 0, 1],
     "output": [150, 150, 1, 0],
+    "7seg": [150, 180, 7, 0],
+    "clock": [140, 70, 0, 1],
     "or": [140, 150, 2, 1],
     "and": [140, 150, 2, 1],
     "xor": [140, 150, 2, 1],
@@ -25,7 +25,7 @@ var gates = []
 var newgatex = 0
 var newgatey = 0
 
-const canvas = document.querySelector("canvas")
+const canvas = document.getElementById("lines")
 const ctx = canvas.getContext("2d")
 
 ctx.lineWidth = 10
@@ -33,6 +33,26 @@ ctx.lineWidth = 10
 var lines = []
 
 var clickedgate = undefined
+
+function updateinputstate(_this)
+{
+    console.log("input node clicked")
+    _this.outputs[0] = !_this.outputs[0]
+
+    _this.outputs[0]
+    ? _this.viewer.setAttribute("data-button-set", "true")
+    : _this.viewer.setAttribute("data-button-set", "false")
+
+    console.log("=> %s", _this.outputs[0])
+
+    for (var i = 0; i < _this.child.length; i++)
+    {
+        _this.child[i].inputs[_this.pid[i]] = _this.outputs[0]
+        _this.child[i].update()
+    }
+
+    redraw()
+}
 
 class Gate
 {
@@ -49,15 +69,19 @@ class Gate
         this.moffy = 0
         this.id = Date.now()
         this.viewer = undefined
+        this.speed = 500
         this.child = []
         this.pid = [] // parent 0 or 1 of the child?
+        this.canvas = undefined
+        this.ctx = undefined
+        this.speedslider = undefined
+        this.clockinterval = undefined
         this.inputnodepositions = []
         this.outputnodepositions = []
-
         this.inputnodeelements = []
         this.outputnodeelements = []
 
-        if (this.type == "input")
+        if (this.type == "input" || this.type == "clock")
         {
             this.inputs = []
             this.outputs = [false]
@@ -71,6 +95,11 @@ class Gate
         {
             this.inputs = [false]
             this.outputs = [false]
+        }
+        else if (this.type == "7seg")
+        {
+            this.inputs = [false, false, false, false, false, false, false]
+            this.outputs = []
         }
         else
         {
@@ -99,25 +128,40 @@ class Gate
 
             if (this.type == "input")
             {
-                this.viewer.addEventListener("click", () => {
-                    console.log("input node clicked")
-                    this.outputs[0] = !this.outputs[0]
-
-                    this.outputs[0]
-                    ? this.viewer.setAttribute("data-button-set", "true")
-                    : this.viewer.setAttribute("data-button-set", "false")
-
-                    console.log("=> %s", this.outputs[0])
-
-                    for (var i = 0; i < this.child.length; i++)
-                    {
-                        this.child[i].inputs[this.pid[i]] = this.outputs[0]
-                        this.child[i].update()
-                    }
-
-                    redraw()
-                })
+                this.viewer.addEventListener("click", () => updateinputstate(this))
             }
+        }
+        else if (this.type == "clock")
+        {
+            const innerWrapper = document.createElement("span")
+            innerWrapper.innerText = this.type
+            
+            this.speedslider = document.createElement("input")
+            this.speedslider.type = "range"
+            this.speedslider.min = "0"
+            this.speedslider.max = "990"
+
+            this.speedslider.addEventListener("input", () => {
+                this.speed = 1000 - this.speedslider.valueAsNumber
+                clearInterval(this.clockinterval)
+                this.startInterval()
+            })
+
+            innerWrapper.appendChild(this.speedslider)
+            this.element.appendChild(innerWrapper)
+            this.startInterval()
+        }
+        else if (this.type == "7seg")
+        {
+            this.canvas = document.createElement("canvas")
+            this.canvas.height = 140
+            this.canvas.width = 110
+            this.ctx = this.canvas.getContext("2d")
+
+            this.ctx.fillStyle = "#f00"
+            fillSegments(this.ctx, this.inputs)
+            
+            this.element.appendChild(this.canvas)
         }
         else
         {
@@ -253,10 +297,22 @@ class Gate
         }
     }
 
+    startInterval()
+    {
+        this.clockinterval = setInterval(() => {
+            this.outputs[0] = !this.outputs[0]
+            this.update()
+            redraw()
+        }, this.speed)
+    }
+
     update(inputs)
     {
-        const out = this.calculate()
-        if (this.type !== "output" && this.child !== undefined)
+        if (this.type == "clock") this.outputnodeelements[0].style.backgroundColor = this.outputs[0] ? "#f00" : "var(--theme-color)"
+
+        if (this.type == "7seg") fillSegments(this.ctx, this.inputs)
+
+        if (notes[this.type][3] !== 0 && this.child !== undefined)
         {
             for (var i = 0; i < this.pid.length; i++)
             {
@@ -312,6 +368,7 @@ class Gate
                 gate.child.forEach(child => {
                     if (child === this)
                     {
+                        gate.pid.splice(gate.child.indexOf(this), 1)
                         gate.child.splice(i, 1)
                         check()
                     }
