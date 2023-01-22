@@ -33,6 +33,10 @@ document.getElementById("closebtn").addEventListener("click", () => {
     document.getElementById("optionsmenu").classList.add("unopen")
 })
 
+document.getElementById("closeoutdated").addEventListener("click", () => {
+    document.getElementById("outdated").classList.add("unopen")
+})
+
 document.getElementById("h2ubtn").addEventListener("click", () => {
     document.getElementById("menuwrapper").click()
     document.getElementById("optionsmenu").classList.remove("unopen")
