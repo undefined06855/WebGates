@@ -30,22 +30,24 @@ function createSegment(x,y,width,height,pointDepth,horizontal) {
     return rectangle;
 }
 
-const segA = createSegment(35,16,40,12,6,true);
-const segB = createSegment(78,30,12,40,8);
-const segC = createSegment(78,88,12,40,8);
-const segD = createSegment(35,130,40,12,6,true);
-const segE = createSegment(20,88,12,40,8);
-const segF = createSegment(20,30,12,40,8);
-const segG = createSegment(35,73,40,12,6,true);
+const segA = createSegment(15,0,40,12,6,true);
+const segB = createSegment(58,14,12,40,8);
+const segC = createSegment(58,72,12,40,8);
+const segD = createSegment(15,114,40,12,6,true);
+const segE = createSegment(0,72,12,40,8);
+const segF = createSegment(0,14,12,40,8);
+const segG = createSegment(15,57,40,12,6,true);
 
+
+const segmentlist = [segA, segB, segC, segD, segE, segF, segG]
 // custom:
-function fillSegments(_ctx, segments)
+function fillSegments(_ctx, _canvas, segments)
 {
-    if (segments[0]) _ctx.fill(segA)
-    if (segments[1]) _ctx.fill(segB)
-    if (segments[2]) _ctx.fill(segC)
-    if (segments[3]) _ctx.fill(segD)
-    if (segments[4]) _ctx.fill(segE)
-    if (segments[5]) _ctx.fill(segF)
-    if (segments[6]) _ctx.fill(segG)
+    _ctx.clearRect(0, 0, _canvas.width, _canvas.height)
+    for (var i = 0; i < segments.length; i++)
+    {
+      if (segments[i]) _ctx.fillStyle = "#f00"
+      else _ctx.fillStyle = "#461e05"
+      _ctx.fill(segmentlist[i])
+    }
 }

@@ -154,12 +154,13 @@ class Gate
         else if (this.type == "7seg")
         {
             this.canvas = document.createElement("canvas")
-            this.canvas.height = 140
-            this.canvas.width = 110
+            this.canvas.height = 126
+            this.canvas.width = 70
             this.ctx = this.canvas.getContext("2d")
 
             this.ctx.fillStyle = "#f00"
-            fillSegments(this.ctx, this.inputs)
+
+            fillSegments(this.ctx, this.canvas, [false, false, false, false, false, false, false])
             
             this.element.appendChild(this.canvas)
         }
@@ -308,9 +309,13 @@ class Gate
 
     update(inputs)
     {
+        this.calculate()
+
         if (this.type == "clock") this.outputnodeelements[0].style.backgroundColor = this.outputs[0] ? "#f00" : "var(--theme-color)"
 
-        if (this.type == "7seg") fillSegments(this.ctx, this.inputs)
+        if (this.type == "7seg") fillSegments(this.ctx, this.canvas, this.inputs)
+
+        if (this.type == "output") this.viewer.setAttribute("data-button-set", this.inputs[0].toString())
 
         if (notes[this.type][3] !== 0 && this.child !== undefined)
         {
@@ -382,6 +387,7 @@ class Gate
         {
             this.child[i].inputs[this.pid[i]] = false
         }
+        console.log(this.child)
         redraw()
     }
 }
