@@ -1,4 +1,4 @@
-const VERSION = "1.3.3"
+const VERSION = "1.3.4"
 
 const contextmenu = document.getElementById("ctxmenu")
 const contextmenu2 = document.getElementById("ctxmenu2")
@@ -385,11 +385,15 @@ class Gate
             check()
 
         })
+
+        if (this.clockinterval !== undefined) clearInterval(this.clockinterval)
+
         for (var i = 0; i < this.child.length; i++)
         {
             this.child[i].inputs[this.pid[i]] = false
             this.child[i].update()
         }
+
         redraw()
     }
 }
