@@ -86,13 +86,13 @@ function openContextMenu(event, contexttype)
 
     const rect = menus[contexttype].getBoundingClientRect()
     
-    if (rect.bottom > window.innerHeight) menus[contexttype].style.top = (event.pageY - rect.height) + "px"
-    else menus[contexttype].style.top = event.pageY + "px"
-    if (rect.right > window.innerWidth) menus[contexttype].style.left = (event.pageX - rect.width) + "px"
-    else menus[contexttype].style.left = event.pageX + "px"
+    if (rect.bottom > window.innerHeight) newgatey = (event.pageY - rect.height)
+    else newgatey = event.pageY
+    if (rect.right > window.innerWidth) newgatex = (event.pageX - rect.width)
+    else newgatex = event.pageX
 
-    newgatex = event.pageX
-    newgatey = event.pageY
+    menus[contexttype].style.top = newgatey + "px"
+    menus[contexttype].style.left = newgatex + "px"
 
     return false
 }
@@ -116,6 +116,7 @@ document.getElementById("gates").addEventListener("contextmenu", event => {
 
 document.addEventListener("click", event => {
     if (!event.composedPath().includes(contextmenu)) closeContextMenu(0)
+    if (!event.composedPath().includes(contextmenu2)) closeContextMenu(1)
 })
 
 document.addEventListener("keydown", event => {
@@ -137,6 +138,7 @@ document.addEventListener("keydown", event => {
 Array.from(document.getElementsByClassName("menuitem")).forEach(item => {
     item.addEventListener("click", event => {
              if (item.getAttribute("data-action-type") == "delete") clickedgate.delete()
+             if (item.getAttribute("data-action-type") == "clone") clickedgate.clone()
         else if (item.getAttribute("data-gate-type")) new Gate(newgatex, newgatey, item.getAttribute("data-gate-type"))
 
         closeContextMenu(0)
@@ -144,7 +146,7 @@ Array.from(document.getElementsByClassName("menuitem")).forEach(item => {
     })
 })
 
-function redraw(nodeselect = false, event = null)
+function redraw()
 {
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
@@ -168,13 +170,13 @@ function redraw(nodeselect = false, event = null)
         catch (e) { console.log("could not draw line!"); console.log(e) }
     })
 
-    if (event !== null && nodeselect)
+    if (nodeselectstate.length !== 0)
     {
-        console.log("mousemove!")
+        console.log("mousemove event")
         ctx.beginPath()
         ctx.strokeStyle = nodeselectstate[0].outputs[0] ? "#f00" : "#000"
         ctx.moveTo(nodeselectstate[1][0], nodeselectstate[1][1])
-        ctx.lineTo(event.pageX, event.pageY)
+        ctx.lineTo(mousex, mousey)
         ctx.stroke()
     }
 }
@@ -182,5 +184,11 @@ function redraw(nodeselect = false, event = null)
 window.addEventListener("resize", redraw)
 
 document.addEventListener("mousemove", event => {
-    if (nodeselectstate.length !== 0) redraw(true, event)
+    mousex = event.pageX
+    mousey = event.pageY
+
+    if (nodeselectstate.length !== 0)
+    {
+        redraw()
+    }
 })
