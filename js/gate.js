@@ -307,7 +307,7 @@ class Gate
         }, this.speed)
     }
 
-    update(inputs)
+    update()
     {
         this.calculate()
 
@@ -386,8 +386,8 @@ class Gate
         for (var i = 0; i < this.child.length; i++)
         {
             this.child[i].inputs[this.pid[i]] = false
+            this.child[i].update()
         }
-        console.log(this.child)
         redraw()
     }
 }
