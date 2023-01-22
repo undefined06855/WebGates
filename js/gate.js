@@ -1,4 +1,4 @@
-const VERSION = "1.3.4"
+const VERSION = "1.4"
 
 const contextmenu = document.getElementById("ctxmenu")
 const contextmenu2 = document.getElementById("ctxmenu2")
@@ -9,17 +9,17 @@ var nodeselectstate = []
 
 const notes = {
     // width, height, inputs, outputs
-    "input": [150, 150, 0, 1],
-    "output": [150, 150, 1, 0],
+    "input": [130, 130, 0, 1],
+    "output": [130, 130, 1, 0],
     "7seg": [150, 180, 7, 0],
-    "clock": [140, 70, 0, 1],
-    "or": [140, 150, 2, 1],
-    "and": [140, 150, 2, 1],
-    "xor": [140, 150, 2, 1],
-    "not": [140, 70, 1, 1],
-    "nor": [140, 150, 2, 1],
-    "nand": [140, 150, 2, 1],
-    "xnor": [140, 150, 2, 1]
+    "clock": [130, 70, 0, 1],
+    "or": [120, 60, 2, 1],
+    "and": [120, 60, 2, 1],
+    "xor": [120, 60, 2, 1],
+    "not": [120, 60, 1, 1],
+    "nor": [120, 60, 2, 1],
+    "nand": [120, 60, 2, 1],
+    "xnor": [120, 60, 2, 1]
 }
 
 var gates = []
@@ -35,6 +35,11 @@ ctx.lineWidth = 10
 var lines = []
 
 var clickedgate = undefined
+
+var lastz = 0
+
+var mousex = 0
+var mousey = 0
 
 function updateinputstate(_this)
 {
@@ -65,6 +70,7 @@ class Gate
         this.y = y
         this.width = notes[type][0]
         this.height = notes[type][1]
+        this.zindex = lastz
         this.type = type
         this.clicked = false
         this.moffx = 0
@@ -73,7 +79,7 @@ class Gate
         this.viewer = undefined
         this.speed = 500
         this.child = []
-        this.pid = [] // parent 0 or 1 of the child?
+        this.pid = [] // parent id
         this.canvas = undefined
         this.ctx = undefined
         this.speedslider = undefined
@@ -82,6 +88,8 @@ class Gate
         this.outputnodepositions = []
         this.inputnodeelements = []
         this.outputnodeelements = []
+
+        lastz++
 
         if (this.type == "input" || this.type == "clock")
         {
@@ -117,6 +125,8 @@ class Gate
     
         this.element.style.width = this.width + "px"
         this.element.style.height = this.height + "px"
+
+        this.element.style.zIndex = this.zindex
 
         if (this.type == "input" || this.type == "output")
         {
@@ -177,6 +187,8 @@ class Gate
         this.inputnodes.classList.add("inputnodes")
         this.element.appendChild(this.inputnodes)
 
+        if (this.type == "7seg") this.inputnodes.classList.add("display")
+
         this.outputnodes = document.createElement("div")
         this.outputnodes.classList.add("outputnodes")
         this.element.appendChild(this.outputnodes)
@@ -204,7 +216,7 @@ class Gate
     
                         nodeselectstate[0].update()
     
-                        nodeselectstate = []
+                        if (!event.shiftKey) nodeselectstate = []
     
                         redraw()
                     }
@@ -246,12 +258,14 @@ class Gate
             this.clicked = true
             this.moffx = event.clientX - this.x
             this.moffy = event.clientY - this.y
+            this.element.style.zIndex = lastz
+            lastz++
         })
 
         this.element.addEventListener("mouseup", () => this.clicked = false)
         this.element.addEventListener("mouseleave", () => this.clicked = false)
         this.element.addEventListener("mousemove", event => {
-            if (this.clicked && nodeselectstate.length === 0)
+            if (this.clicked && nodeselectstate.length === 0 && !event.composedPath().includes(this.speedslider))
             {
                 var newy = event.clientY - this.moffy
                 var newx = event.clientX - this.moffx
@@ -283,6 +297,7 @@ class Gate
 
         gates.push(this)
         this.reposition()
+        return this
     }
 
     calculate()
@@ -363,6 +378,11 @@ class Gate
                 (rect.top + rect.bottom) / 2
             ])
         })
+    }
+
+    clone()
+    {
+        new Gate(this.x + 15, this.y + 15, this.type)
     }
 
     delete()

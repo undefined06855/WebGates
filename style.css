@@ -151,7 +151,7 @@ kbd {
     right: -7.5px;
 }
 
-.inputnodes {
+.inputnodes:not(.display) {
     left: -7.5px;
 }
 
@@ -171,6 +171,13 @@ kbd {
     background-color: var(--theme-color);
 
     border-radius: 50%;
+}
+
+.display {
+    flex-direction: row;
+    height: auto;
+    width: 100%;
+    bottom: -7.5px;
 }
 
 .title {
