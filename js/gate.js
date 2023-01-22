@@ -1,3 +1,5 @@
+const VERSION = "1.3.3"
+
 const contextmenu = document.getElementById("ctxmenu")
 const contextmenu2 = document.getElementById("ctxmenu2")
 
