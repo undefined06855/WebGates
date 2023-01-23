@@ -54,14 +54,14 @@
 
         <canvas id="lines">Your browser does not support HTML canvas. Lines will not be visible.</canvas>
 
-        <div class="menu unopen" id="optionsmenu">
+        <div class="menu unopen" id="intromenu">
             <h1>Welcome to WebGates!</h1>
             <p>
                 WebGates is a free, online logic gate simulator.
             </p>
             <p class="image left">
                 <img src="./images/intro-1.png" />
-                <span>Right clicking anywhere will bring up this menu. Use this to place gates anywhere on the screen!<br/><small>Some mouses or touchpads don't have a right click button. In that case you can use <kbd>alt</kbd> or <kbd>ctrl</kbd> keys at the same time as clicking to simulate a right click.</small></span>
+                <span>Right clicking anywhere will bring up this menu. Use this to place gates anywhere on the screen!<br/><small>Some mouses or touchpads don't have a right click button. In that case you can use <kbd>alt</kbd> or <kbd>ctrl</kbd> keys at the same time as clicking to simulate a right click.<br/>If you are on a mobile device, holding down on the screen for a bit should do</small></span>
             </p>
             <p class="paraspacer"></p>
             <p class="image right">
@@ -85,15 +85,31 @@
         <div class="menu unopen" id="settingsmenu">
             <h2>Settings</h2>
 
-            <p id="colourselectp">
-                <span style="margin-right: 50px;">Change theme colour: </span>
-                <input type="color" id="colourselector" />
-            </p>
+            <table>
+                <tbody>
+                    <tr>
+                        <td><span style="margin-right: 50px;">Change theme colour: </span></td>
+                        <td><input type="color" id="colourselector" /></td>
+                    </tr>
+                    <tr>
+                        <td><span style="margin-right: 50px;">Change powered colour: </span></td>
+                        <td><input type="color" id="colourselector2" /></td>
+                    </tr>
+                    <tr>
+                        <td>Gate rounding:</td>
+                        <td><input type="range" value="10" min="0" max="200" oninput="settings.rounding = Number(this.value); updatecustomstylesheets()"></td>
+                    </tr>
+                    <tr>
+                        <td>Line debug:</td>
+                        <td><div class="toggle" data-setting="curveDebug"></div></td>
+                    </tr>
+                </tbody>
+            </table>
 
             <button id="h2ubtn">Open how-to-use menu</button>
             <button id="sourcebtn">View the source code</button>
             <button id="projectbtn">See some of my other projects</button>
-            <span class="creditspan">This font is <a href="https://fonts.google.com/specimen/Fredoka+One">Fredoka One</a> from Google Fonts (fallback font: system-ui).</span>
+            <span class="creditspan">This font is <a href="https://fonts.google.com/specimen/Fredoka+One">Fredoka One</a> from Google Fonts<br/><small>(fallback font: system-ui).</small></span>
             <span class="creditspan">Click <a href="./COPYRIGHTS.txt">here</a> to see copyrights.</span>
             <button id="clearbtn">Clear localStorage</button>
 
@@ -126,11 +142,12 @@
         </div>
 
         <script src="./js/libs/segment.js"></script>
+        <script src="./js/libs/pSBC.js"></script>
         <script src="./js/gate.js"></script>
         <script src="./js/main.js"></script>
 
         <script>
-            const TARGETVER = "1.4"
+            const TARGETVER = "1.5"
             document.getElementById("version").innerText = VERSION
             // index.html is almost never cached - same with these scripts.
             // if gate.js has a different version number, then the cached

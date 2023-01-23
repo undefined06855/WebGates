@@ -133,7 +133,7 @@ kbd {
 
     font-size: 30px;
 
-    border-radius: 10px;
+    border-radius: var(--border-radius);
 
     background-color: rgb(48, 48, 48);
 
@@ -209,7 +209,7 @@ button {
 
 button[data-button-set="true"]
 {
-    background-color: red;
+    background-color: var(--on-col);
 }
 
 button[data-button-set="false"], button
@@ -261,7 +261,7 @@ button[data-button-set="false"], button
 .menu {
     position: fixed;
     top: 5vh;
-    left: 5vw;
+    left: 15vw;
 
     background-color: rgb(60, 60, 60);
     color: rgb(202, 202, 202);
@@ -270,7 +270,7 @@ button[data-button-set="false"], button
 
     padding: 5px;
 
-    width: 90vw;
+    width: 70vw;
     height: 90vh;
 
     border-radius: 5px;
@@ -279,7 +279,7 @@ button[data-button-set="false"], button
     align-items: center;
     flex-direction: column;
 
-    overflow: scroll;
+    overflow-y: scroll;
 
     transition: all .5s ease;
 }
@@ -317,8 +317,8 @@ img {
 }
 
 input[type=color] {
-    width: 30%;
-    height: 70%;
+    width: 50%;
+    height: 100%;
 }
 
 .version {
@@ -337,6 +337,7 @@ input[type=color] {
 }
 
 .creditspan {
+    text-align: center;
     margin-top: 25px;
     flex: 1;
 }
@@ -357,3 +358,67 @@ input[type=color] {
     height: 25px;
     width: 40%;
 }
+
+.toggle {   
+    --width: 60px;             
+    --height: 40px;             
+    min-width: var(--width);
+    min-height: var(--height);
+    max-width: var(--width);
+    max-height: var(--height);
+    width: var(--width);
+    height: var(--height);
+
+    border: 2px solid #000;
+
+    border-radius: 150px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: left;
+
+    padding: 0px 5px;
+
+    background-color: rgb(196, 196, 196);
+
+    transition: background-color .15s linear;
+}
+
+.toggle::after {
+    content: "";
+    height: 80%;
+    width: 50%;
+    border-radius: 50%;
+
+    background-color: #fff;
+    box-shadow: 3px 3px 3px #000;
+
+    transition: translate .15s ease-in-out;
+}
+
+.toggle.right {
+    background-color: rgb(75, 217, 99);
+}
+
+.toggle.right::after {
+    translate: 100%;
+}
+
+table, tbody {
+    width: 85%;
+}
+
+td {
+    width: 50%;
+    height: 45px;
+    vertical-align: middle;
+}
+
+td:nth-child(1) {
+    text-align: left;
+}
+
+td:nth-child(2) {
+    text-align: right;
+}
+

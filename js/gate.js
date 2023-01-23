@@ -1,4 +1,4 @@
-const VERSION = "1.4"
+const VERSION = "1.5"
 
 const contextmenu = document.getElementById("ctxmenu")
 const contextmenu2 = document.getElementById("ctxmenu2")
@@ -6,6 +6,13 @@ const contextmenu2 = document.getElementById("ctxmenu2")
 const menus = [contextmenu, contextmenu2]
 
 var nodeselectstate = []
+
+var settings = {
+    themecol: "#FFFF00",
+    oncol: "#FF0000",
+    curveDebug: false,
+    rounding: 10
+}
 
 const notes = {
     // width, height, inputs, outputs
@@ -170,7 +177,7 @@ class Gate
             this.canvas.width = 70
             this.ctx = this.canvas.getContext("2d")
 
-            this.ctx.fillStyle = "#f00"
+            this.ctx.fillStyle = settings.oncol
 
             fillSegments(this.ctx, this.canvas, [false, false, false, false, false, false, false])
             
@@ -216,7 +223,7 @@ class Gate
     
                         nodeselectstate[0].update()
     
-                        if (!event.shiftKey) nodeselectstate = []
+                        if (!event.shiftKey && !event.ctrlKey) nodeselectstate = []
     
                         redraw()
                     }
@@ -264,28 +271,54 @@ class Gate
 
         this.element.addEventListener("mouseup", () => this.clicked = false)
         this.element.addEventListener("mouseleave", () => this.clicked = false)
-        this.element.addEventListener("mousemove", event => {
-            if (this.clicked && nodeselectstate.length === 0 && !event.composedPath().includes(this.speedslider))
+
+        this.element.addEventListener("touchstart", event => {
+            this.clicked = true
+            this.moffx = event.touches[0].clientX - this.x
+            this.moffy = event.touches[0].clientY - this.y
+            this.element.style.zIndex = lastz
+            lastz++
+        })
+
+        this.element.addEventListener("touchcancel", () => this.clicked = false)
+        this.element.addEventListener("touchend", () => this.clicked = false)
+
+        const gatedrag = (event, mobile) => {
+            if (mobile)
+            {
+                var newy = event.touches[0].clientY - this.moffy
+                var newx = event.touches[0].clientX - this.moffx
+            }
+            else
             {
                 var newy = event.clientY - this.moffy
                 var newx = event.clientX - this.moffx
-
-                if (newx < 0) newx = 1
-                if (newx > window.innerWidth - this.width) newx = window.innerWidth - this.width - 1
-                if (newy < 0) newy = 1
-                if (newy > window.innerHeight - this.height) newy = window.innerHeight - this.height - 1
-
-                this.x = newx
-                this.y = newy
-
-                this.element.style.left = newx + "px"
-                this.element.style.top = newy + "px"
-
-                this.recalcpositions()
-                closeContextMenu(0)
-                closeContextMenu(1)
-                redraw()
             }
+
+
+            if (newx < 0) newx = 1
+            if (newx > window.innerWidth - this.width) newx = window.innerWidth - this.width - 1
+            if (newy < 0) newy = 1
+            if (newy > window.innerHeight - this.height) newy = window.innerHeight - this.height - 1
+
+            this.x = newx
+            this.y = newy
+
+            this.element.style.left = newx + "px"
+            this.element.style.top = newy + "px"
+
+            this.recalcpositions()
+            closeContextMenu(0)
+            closeContextMenu(1)
+            redraw()
+        }
+
+        this.element.addEventListener("mousemove", event => {
+            if (this.clicked && nodeselectstate.length === 0 && !event.composedPath().includes(this.speedslider)) gatedrag(event, false) 
+        })
+
+        this.element.addEventListener("touchmove", event => {
+            if (nodeselectstate.length === 0 && !event.composedPath().includes(this.speedslider)) gatedrag(event, true)
         })
 
         this.element.addEventListener("contextmenu", event => {
@@ -293,7 +326,7 @@ class Gate
             openContextMenu(event, 1)
         })
 
-        window.addEventListener("resize", () => this.reposition()   )
+        window.addEventListener("resize", () => this.reposition())
 
         gates.push(this)
         this.reposition()
@@ -328,10 +361,8 @@ class Gate
     {
         this.calculate()
 
-        if (this.type == "clock") this.outputnodeelements[0].style.backgroundColor = this.outputs[0] ? "#f00" : "var(--theme-color)"
-
+        if (this.type == "clock") this.outputnodeelements[0].style.backgroundColor = this.outputs[0] ? settings.oncol : "var(--theme-color)"
         if (this.type == "7seg") fillSegments(this.ctx, this.canvas, this.inputs)
-
         if (this.type == "output") this.viewer.setAttribute("data-button-set", this.inputs[0].toString())
 
         if (notes[this.type][3] !== 0 && this.child !== undefined)

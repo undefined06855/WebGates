@@ -38,16 +38,14 @@ const segE = createSegment(0,72,12,40,8);
 const segF = createSegment(0,14,12,40,8);
 const segG = createSegment(15,57,40,12,6,true);
 
-
-const segmentlist = [segA, segB, segC, segD, segE, segF, segG]
 // custom:
+const segmentlist = [segA, segB, segC, segD, segE, segF, segG]
 function fillSegments(_ctx, _canvas, segments)
 {
     _ctx.clearRect(0, 0, _canvas.width, _canvas.height)
     for (var i = 0; i < segments.length; i++)
     {
-      if (segments[i]) _ctx.fillStyle = "#f00"
-      else _ctx.fillStyle = "#461e05"
+      _ctx.fillStyle = segments[i] ? settings.oncol : RGB_Linear_Shade(-.7, hexToRgb(settings.oncol))
       _ctx.fill(segmentlist[i])
     }
 }
