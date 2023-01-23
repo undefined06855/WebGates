@@ -1,36 +1,50 @@
-if (window.localStorage.getItem("viewedPrompt") === null) document.getElementById("optionsmenu").classList.remove("unopen")
+if (window.localStorage.getItem("viewedPrompt") === null)
+document.getElementById("intromenu").classList.remove("unopen")
 
-if (window.localStorage.getItem("theme") === null)
+if (window.localStorage.getItem("settings") === null)
 {
     document.getElementById("colourselector").value = "#FFFF00"
-    window.localStorage.setItem("theme", document.getElementById("colourselector").value)
+    document.getElementById("colourselector2").value = "#FF0000"
+    window.localStorage.setItem("settings", JSON.stringify(settings))
 }
-else document.getElementById("colourselector").value = window.localStorage.getItem("theme")
-
+else
+{
+    settings = JSON.parse(window.localStorage.getItem("settings"))
+    document.getElementById("colourselector").value = settings.themecol
+    document.getElementById("colourselector2").value = settings.oncol
+}
 // credit to chatGPT
-function getContrastingTextColor(hex) {
-    var r = parseInt(hex.substr(1, 2), 16);
-    var g = parseInt(hex.substr(3, 2), 16);
-    var b = parseInt(hex.substr(5, 2), 16);
-    var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-    return (yiq >= 128) ? "rgb(35, 35, 35)" : "rgb(234, 234, 234)";
+function getContrastingTextColor(hex) { return ((parseInt(hex.substr(1,2),16)*299)+(parseInt(hex.substr(3,2),16)*587)+(parseInt(hex.substr(5,2),16)*114))/1000>=128?"rgb(35, 35, 35)":"rgb(234, 234, 234)" }
+
+var themestyler;
+
+function updatecustomstylesheets()
+{
+    window.localStorage.setItem("settings", JSON.stringify(settings))
+
+    try {themestyler.remove()} catch(_) {}
+    themestyler = document.createElement("style")
+    themestyler.innerText = `:root{--theme-color:${settings.themecol};--text-color:${getContrastingTextColor(settings.themecol)};--border-radius:${settings.rounding}px;--on-col:${settings.oncol};}`
+    document.head.appendChild(themestyler)
 }
 
-var themestyler = document.createElement("style")
-themestyler.innerText = `:root { --theme-color: ${document.getElementById("colourselector").value}; --text-color: ${getContrastingTextColor(document.getElementById("colourselector").value)};}`
-document.head.appendChild(themestyler)
+updatecustomstylesheets()
 
 document.getElementById("colourselector").addEventListener("input", () => {
-    window.localStorage.setItem("theme", document.getElementById("colourselector").value)
-    themestyler.remove()
-    themestyler = document.createElement("style")
-    themestyler.innerText = `:root { --theme-color: ${document.getElementById("colourselector").value}; --text-color: ${getContrastingTextColor(document.getElementById("colourselector").value)};}`
-    document.head.appendChild(themestyler)
+    settings.themecol = document.getElementById("colourselector").value
+    updatecustomstylesheets()
+    redrawAll()
+})
+
+document.getElementById("colourselector2").addEventListener("input", () => {
+    settings.oncol = document.getElementById("colourselector2").value
+    updatecustomstylesheets()
+    redrawAll()
 })
 
 document.getElementById("closebtn").addEventListener("click", () => {
     window.localStorage.setItem("viewedPrompt", "true")
-    document.getElementById("optionsmenu").classList.add("unopen")
+    document.getElementById("intromenu").classList.add("unopen")
 })
 
 document.getElementById("closeoutdated").addEventListener("click", () => {
@@ -39,7 +53,7 @@ document.getElementById("closeoutdated").addEventListener("click", () => {
 
 document.getElementById("h2ubtn").addEventListener("click", () => {
     document.getElementById("menuwrapper").click()
-    document.getElementById("optionsmenu").classList.remove("unopen")
+    document.getElementById("intromenu").classList.remove("unopen")
 })
 
 document.getElementById("clearbtn").addEventListener("click", () => {
@@ -48,6 +62,24 @@ document.getElementById("clearbtn").addEventListener("click", () => {
         window.localStorage.clear()
         window.location.reload()
     }
+})
+
+Array.from(document.getElementsByClassName("toggle")).forEach(toggle => {
+    if (settings[toggle.getAttribute("data-setting")]) toggle.classList.add("right")
+    toggle.addEventListener("click", () => {
+        if (toggle.classList.contains("right"))
+        {
+            settings[toggle.getAttribute("data-setting")] = false
+            updatecustomstylesheets()
+            toggle.classList.remove("right")
+        }
+        else
+        {
+            settings[toggle.getAttribute("data-setting")] = true
+            updatecustomstylesheets()
+            toggle.classList.add("right")
+        }
+    })
 })
 
 document.getElementById("projectbtn").addEventListener("click", () => {
@@ -126,17 +158,22 @@ document.addEventListener("keydown", event => {
         if (event.code == "Escape")
         {
             closeContextMenu(0)
+            closeContextMenu(1)
             if (nodeselectstate.length !== 0)
             {
                 nodeselectstate = []
                 redraw()
+            }
+            else
+            {
+                document.getElementById("menuwrapper").click()
             }
         }
     }
 })
 
 Array.from(document.getElementsByClassName("menuitem")).forEach(item => {
-    item.addEventListener("click", event => {
+    item.addEventListener("click", () => {
              if (item.getAttribute("data-action-type") == "delete") clickedgate.delete()
              if (item.getAttribute("data-action-type") == "clone") clickedgate.clone()
         else if (item.getAttribute("data-gate-type")) new Gate(newgatex, newgatey, item.getAttribute("data-gate-type"))
@@ -145,6 +182,51 @@ Array.from(document.getElementsByClassName("menuitem")).forEach(item => {
         closeContextMenu(1)
     })
 })
+
+CanvasRenderingContext2D.prototype._cross = (x, y) => {
+    ctx.beginPath()
+    ctx.moveTo(x - 5, y - 5)
+    ctx.lineTo(x + 5, y + 5)
+    ctx.stroke()
+
+    ctx.beginPath()
+    ctx.moveTo(x + 5, y - 5)
+    ctx.lineTo(x - 5, y + 5)
+    ctx.stroke()
+}
+
+CanvasRenderingContext2D.prototype._line = (x1, y1, x2, y2, verticalend = false) => {
+    var handle1x, handle2x, handle1y, handle2y
+    if (verticalend)
+    {
+        handle1x = (x1 + x2) / 2
+        handle2x = x2
+        handle1y = y1
+        handle2y = (y1 + y2) / 2
+    }
+    else
+    {
+        handle1x = (x1 + x2) / 2
+        handle2x = (x1 + x2) / 2
+        handle1y = y1
+        handle2y = y2
+    }
+
+
+    ctx.beginPath()
+    ctx.moveTo(x1, y1)
+    ctx.bezierCurveTo(
+        handle1x, handle1y,
+        handle2x, handle2y, x2, y2
+    )
+    ctx.stroke()
+
+    if (settings.curveDebug)
+    {
+        ctx._cross(handle1x, handle1y)
+        ctx._cross(handle2x, handle2y)
+    }
+}
 
 function redraw()
 {
@@ -155,26 +237,29 @@ function redraw()
         try {
             if (gate.type !== "output")
             {
-                ctx.strokeStyle = gate.outputs[0] ? "#f00" : "#000"
+                ctx.strokeStyle = gate.outputs[0] ? settings.oncol : "#000"
                 for (var i = 0; i < gate.child.length; i++)
                 {
-                        ctx.beginPath()
-                        ctx.moveTo(gate.outputnodepositions[0][0], gate.outputnodepositions[0][1])
-                        ctx.lineTo(gate.child[i].inputnodepositions[gate.pid[i]][0], gate.child[i].inputnodepositions[gate.pid[i]][1])
-                        ctx.stroke()
-                        console.log("line %s drew", i)
+                    ctx._line(
+                        gate.outputnodepositions[0][0],
+                        gate.outputnodepositions[0][1],
+                        gate.child[i].inputnodepositions[gate.pid[i]][0],
+                        gate.child[i].inputnodepositions[gate.pid[i]][1],
+                        gate.child[i].type == "7seg"
+                    )
+                    console.log("line %s drew", i)
                 }
             }
             else console.log("gate is output!")
         }
-        catch (e) { console.log("could not draw line!"); console.log(e) }
+        catch (_) { console.log("error drawing line!")}
     })
 
     if (nodeselectstate.length !== 0)
     {
-        console.log("mousemove event")
+        ctx.strokeStyle = nodeselectstate[0].outputs[0] ? settings.oncol : "#000"
+
         ctx.beginPath()
-        ctx.strokeStyle = nodeselectstate[0].outputs[0] ? "#f00" : "#000"
         ctx.moveTo(nodeselectstate[1][0], nodeselectstate[1][1])
         ctx.lineTo(mousex, mousey)
         ctx.stroke()
@@ -192,3 +277,11 @@ document.addEventListener("mousemove", event => {
         redraw()
     }
 })
+
+function redrawAll()
+{
+    gates.forEach(gate => {
+        if (gate.type == "7seg") fillSegments(gate.ctx, gate.canvas, gate.inputs)
+    })
+    redraw()
+}
