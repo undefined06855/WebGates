@@ -1,4 +1,4 @@
-const VERSION = "1.5"
+const VERSION = "1.5.1"
 
 const contextmenu = document.getElementById("ctxmenu")
 const contextmenu2 = document.getElementById("ctxmenu2")
@@ -227,15 +227,30 @@ class Gate
     
                         redraw()
                     }
-                    else
-                    {
-                        console.log("cannot connect node to self!")
-                    }
+                    else console.log("cannot connect node to self!")
+                    
                 }
                 else
                 {
+                    // scan if any lines are connected - if so remove them
+                    gates.forEach(gate => {
+                        var i = 0
+                        gate.child.forEach(child => {
+                            if (child == this)
+                            {
+                                gate.pid.splice(i, 1)
+                                gate.child.splice(i, 1)
+                                redraw()
+                            }
+                            i++
+                        })
+                    })
+
                     console.log("output not clicked first!")
                 }
+
+
+                
             })
         }
 
@@ -248,13 +263,14 @@ class Gate
 
             this.outputnodeelements.push(outputnode)
 
-            outputnode.addEventListener("click", event => {
+            outputnode.addEventListener("click", () => {
                 const rect = outputnode.getBoundingClientRect()
                 nodeselectstate[0] = this
                 nodeselectstate[1] = [
                     [(rect.left + rect.right) / 2],
                     [(rect.top + rect.bottom) / 2]
                 ]
+
                 console.log("clicked output node")
             })
         }
