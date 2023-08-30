@@ -247,10 +247,10 @@ function redraw()
                         gate.child[i].inputnodepositions[gate.pid[i]][1],
                         gate.child[i].type == "7seg"
                     )
-                    console.log("line %s drew", i)
+                    //console.log("line %s drew", i) <- makes performance terrible
                 }
             }
-            else console.log("gate is output!")
+            //else console.log("gate is output!") <- makes performance terrible
         }
         catch (_) { console.log("error drawing line!")}
     })

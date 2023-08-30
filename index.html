@@ -56,12 +56,16 @@
 
         <div class="menu unopen" id="intromenu">
             <h1>Welcome to WebGates!</h1>
+            <p class="warning">
+                Just a pre-warning: There are going to be many bugs. WebGates was made when I had very little skill in Javascript, and as a result most of the code that WebGates runs on is hacky and falls apart when bugs are fixed. A second version of WebGates with better, more readable and easier to debug code is being worked on!
+            </p>
+            <hr/>
             <p>
                 WebGates is a free, online logic gate simulator.
             </p>
             <p class="image left">
                 <img src="./images/intro-1.png" />
-                <span>Right clicking anywhere will bring up this menu. Use this to place gates anywhere on the screen!<br/><small>Some mouses or touchpads don't have a right click button. In that case you can use <kbd>alt</kbd> or <kbd>ctrl</kbd> keys at the same time as clicking to simulate a right click.<br/>If you are on a mobile device, holding down on the screen for a bit should do</small></span>
+                <span>Right clicking anywhere will bring up this menu. Use this to place gates anywhere on the screen!<br/><small>Some mouses or touchpads don't have a right click button. In that case you can use <kbd>alt</kbd> or <kbd>ctrl</kbd> keys at the same time as clicking to simulate a right click.<br/>If you are on a mobile device, holding down on the screen for a bit should work, however you cannot move gates once they are placed on mobile. It is highly recommended to use a computer for WebGates.</small></span>
             </p>
             <p class="paraspacer"></p>
             <p class="image right">
@@ -107,7 +111,7 @@
             </table>
 
             <button id="h2ubtn">Open how-to-use menu</button>
-            <button id="sourcebtn">View the source code</button>
+            <button id="sourcebtn">View the source code <small>(very highly not recommended)</small></button>
             <button id="projectbtn">See some of my other projects</button>
             <span class="creditspan">This font is <a href="https://fonts.google.com/specimen/Fredoka+One">Fredoka One</a> from Google Fonts<br/><small>(fallback font: system-ui).</small></span>
             <span class="creditspan">Click <a href="./COPYRIGHTS.txt">here</a> to see copyrights.</span>
@@ -147,7 +151,7 @@
         <script src="./js/main.js"></script>
 
         <script>
-            const TARGETVER = "1.5.1"
+            const TARGETVER = "1.5.2-FINAL"
             document.getElementById("version").innerText = VERSION
             // index.html is almost never cached - same with these scripts.
             // if gate.js has a different version number, then the cached

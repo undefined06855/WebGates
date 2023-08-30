@@ -1,5 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap");
 
+.warning {
+    background-color: #ff5100be;
+    border-radius: 3px;
+}
+
 * {
     margin: 0;
     padding: 0;

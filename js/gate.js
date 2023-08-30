@@ -1,4 +1,4 @@
-const VERSION = "1.5.1"
+const VERSION = "1.5.2-FINAL"
 
 const contextmenu = document.getElementById("ctxmenu")
 const contextmenu2 = document.getElementById("ctxmenu2")
